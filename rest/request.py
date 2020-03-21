@@ -51,8 +51,6 @@ class UploadTrackRequest(AuthRequestBase):
         super().__init__(RequestType.UPLOAD_TRACK, params)
 
 
-
-
 class UpdateUserStatusRequest(AuthRequestBase):
 
     def __init__(self, params):

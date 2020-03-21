@@ -91,7 +91,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         if content_len is not None:
             content_len = int(content_len)
             if content_len > 0:
-                body = json.loads(self.rfile.read(content_len))
+                content = str(self.rfile.read(content_len))
+                logger.debug("BODY: {}".format(content))
+                body = json.loads(content)
 
         result = RequestFactory.get(method=method, path=path, params=params, body=body)
         if isinstance(result, ErrorResponse):

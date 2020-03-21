@@ -20,7 +20,7 @@ Backend of the Corona Tracking App, developed in the context of the #WirVsVirus 
 ```
 {
     "success": True/False,
-    "messages": "Contains message if something went wrong"
+    "message": "Contains message if something went wrong"
     "payload": {
         // request payload here
     }
