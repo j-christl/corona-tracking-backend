@@ -47,7 +47,7 @@ class RequestProcessor:
 
         return ErrorResponse("POST /track not yet implemented")
 
-    def _process_update_update_status_request(self, request):
+    def _process_update_user_status_request(self, request):
         assert isinstance(request, UpdateUserStatusRequest)
         logger.debug("PROCESSING UPDATE USER STATUS request")
 
