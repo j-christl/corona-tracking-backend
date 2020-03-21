@@ -1,8 +1,11 @@
 import time
 from enum import Enum
 import jwt
+import logging
 
 from cfg.config import config
+
+logger = logging.getLogger("corona")
 
 
 class RequestType(Enum):
@@ -42,7 +45,8 @@ class AuthRequestBase(RequestBase):
         if "jwt" not in params:
             raise ValueError("Missing request parameter: jwt")
         secret = config("auth")["jwtSecret"]
-        jwt.decode(params["jwt"])  # throws exeption if validation fails
+        decoded = jwt.decode(params["jwt"], secret,  algorithms=["HS256"])  # throws exeption if validation fails
+        logger.debug("DECODED JWT: {}".format(decoded))
 
 
 class UploadTrackRequest(AuthRequestBase):
