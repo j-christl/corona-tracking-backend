@@ -1,7 +1,7 @@
 import psycopg2
 import logging
 
-from config import config
+from cfg.config import config
 
 
 logger = logging.getLogger("corona")

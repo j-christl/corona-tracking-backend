@@ -37,10 +37,24 @@ Just for testing
 POST /register
 ```
 
+**Response payload:**
+```
+{
+  "jwt": // JSON Web Token here
+}
+  
+```
+
 ## Upload tracking data
 ```
 POST /track
 ```
+
+**Parameters:**
+
+Name | Type | Description
+--- | :---: | ---
+jwt | `object` | JSON Web Token
 
 **Request body:**
 ```
@@ -62,3 +76,15 @@ POST /track
   ]
 }
 ```
+
+## Update user status
+```
+PATCH /status
+```
+
+**Parameters:**
+
+Name | Type | Description
+--- | :---: | ---
+userId | `int64` | 
+status | `string` | User health status
