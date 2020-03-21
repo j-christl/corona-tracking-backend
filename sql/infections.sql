@@ -6,10 +6,10 @@ CREATE TABLE infected_users
     phonenumber text   not null
 );
 
-CREATE FUNCTION update_risk_level(user_id BIGINT, level int) RETURNS VOID AS
+CREATE FUNCTION update_risk_level(user_id BIGINT, risk_level int) RETURNS VOID AS
 $BODY$
 UPDATE users
-SET level = $2
+SET risk_level = $2
 WHERE user_id = $1;
 $BODY$
     LANGUAGE SQL VOLATILE

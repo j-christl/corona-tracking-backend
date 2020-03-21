@@ -1,7 +1,8 @@
 import logging
 
-from cfg.config import config
 import psycopg2
+
+from cfg.config import config
 
 logger = logging.getLogger("corona")
 
@@ -60,6 +61,24 @@ class Database:
         cursor.callproc("report_contact", (reporting_user, contacted_user, contact_time, relevance_factor))
         Database._connection.commit()
         cursor.close()
+
+    @staticmethod
+    def get_users_by_risk_level(risk_level):
+        cursor = Database._connection.cursor()
+        cursor.callproc("get_users_by_risk_level", (risk_level))
+        Database._connection.commit()
+        users = cursor.fetchmany
+        cursor.close()
+        return users
+
+    @staticmethod
+    def get_contacts_after_timestamp(user_id, time_thresh):
+        cursor = Database._connection.cursor()
+        cursor.callproc("get_contacts_after_timestamp", (user_id, time_thresh))
+        Database._connection.commit()
+        contacted_users = cursor.fetchmany
+        cursor.close()
+        return contacted_users
 
     @staticmethod
     def execute_query(query):
