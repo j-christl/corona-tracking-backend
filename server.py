@@ -89,7 +89,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         if content_len is not None:
             content_len = int(content_len)
             if content_len > 0:
-                content = str(self.rfile.read(content_len))
+                content = self.rfile.read(content_len).decode("utf-8")
                 logger.debug("BODY: {}".format(content))
                 body = json.loads(content)
 
