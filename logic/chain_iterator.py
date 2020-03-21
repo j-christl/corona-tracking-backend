@@ -9,6 +9,14 @@ logger = logging.getLogger("corona")
 
 class ChainIterator:
 
+    @staticmethod
+    def process_contacts(contact_group):
+        for contact in contact_group:
+            if contact[1] > contact[3]:
+                Database.update_risk_level(contact[2], (contact[3] + contact[1] * contact[5]) % 5)
+            else:
+                Database.update_risk_level(contact[0], (contact[1] + contact[3] * contact[5]) % 5)
+
     # Process new contacts with level 5s of the last hour
     @staticmethod
     def process_chains():
@@ -18,8 +26,7 @@ class ChainIterator:
             for risk_id in risk_group:
                 contact_group = Database.get_contacts_after_timestamp(risk_id[0], datetime.now() - timedelta(hours=1))
 
-                for contact in contact_group:
-                    print(contact)
+                ChainIterator.process_contacts(contact_group)
         except Exception as ex:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
             return ErrorResponse("Database error")

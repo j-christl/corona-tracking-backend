@@ -8,17 +8,13 @@ $BODY$
                  SECURITY DEFINER;
 
 CREATE FUNCTION get_contacts_after_timestamp(user_id BIGINT, time_thresh timestamp without time zone)
-    RETURNS TABLE
-            (
-                user_id      BIGINT,
-                contact_time timestamp without time zone
-            )
-AS
+    RETURNS SETOF contact_chains AS
 $BODY$
-SELECT contacted_user, contact_time
+SELECT *
 FROM contact_chains
 WHERE reporting_user = $1
-  AND contact_time >= $2;
+  AND contact_time >= $2
+ORDER BY contact_time;
 $BODY$
     LANGUAGE SQL STABLE
                  SECURITY DEFINER;
