@@ -22,9 +22,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         return
 
     def do_POST(self):
-        # info
         logger.info("POST: {}".format(self.path))
-        # parse
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         params = dict(parse_qsl(parsed_path.query))
@@ -39,9 +37,11 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 
 def main():
-    """ Main func """
 
-    # get args
+    if not Database.initialize():
+        Database.terminate()
+        return
+
     params = config("httpserver")
     hostname = params["host"]
     port = int(params["port"])
