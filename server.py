@@ -61,6 +61,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
+
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
@@ -70,6 +71,9 @@ def main():
     if not Database.initialize():
         Database.terminate()
         return
+
+    #TODO remove
+    Database.insert_user()
 
     params = config("httpserver")
     hostname = params["host"]
