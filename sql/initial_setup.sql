@@ -1,12 +1,12 @@
 CREATE TABLE users (
     user_id BIGSERIAL PRIMARY KEY,
-    state text not null
+    risk_level int not null
 );
 
 CREATE FUNCTION insert_user() RETURNS BIGINT AS
     $BODY$
-        INSERT INTO users(state)
-        VALUES('healthy')
+        INSERT INTO users(risk_level)
+        VALUES(0)
         RETURNING user_id;
     $BODY$
 LANGUAGE SQL VOLATILE SECURITY DEFINER;
