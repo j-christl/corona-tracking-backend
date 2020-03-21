@@ -28,6 +28,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         params = dict(parse_qsl(parsed_path.query))
         logger.debug("PARAMS: {}".format(params))
 
+        # TODO get request body
         # TODO update database
 
         self.send_response(400)
@@ -35,6 +36,21 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write("Insert data here")
         self.wfile.write(b"\n")
 
+    def do_GET(self):
+        logger.info("GET: {}".format(self.path))
+        parsed_path = urlparse(self.path)
+        path = parsed_path.path
+        params = dict(parse_qsl(parsed_path.query))
+        logger.debug("PARAMS: {}".format(params))
+
+        if path == "/test":
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write("Test success".encode("utf-8"))
+            self.wfile.write(b"\n")
+        else:
+            self.send_response(404)
+            self.end_headers()
 
 def main():
 
