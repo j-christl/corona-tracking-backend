@@ -67,8 +67,7 @@ jwt | `object` | JSON Web Token
 {
   "contacts": [
     [
-      USER_ID_0,
-      USER_ID_1,
+      OTHER_USER_ID,
       TIMESTAMP
     ],
     ...

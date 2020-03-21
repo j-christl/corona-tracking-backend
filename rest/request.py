@@ -46,8 +46,8 @@ class AuthRequestBase(RequestBase):
             raise ValueError("Missing request parameter: jwt")
         secret = config("auth")["jwtsecret"]
         secret = secret.encode("utf-8")
-        decoded = jwt.decode(params["jwt"], secret,  algorithms=["HS256"])  # throws exeption if validation fails
-        logger.debug("DECODED JWT: {}".format(decoded))
+        self._jwt = jwt.decode(params["jwt"], secret,  algorithms=["HS256"])  # throws exeption if validation fails
+        logger.debug("DECODED JWT: {}".format(self._jwt))
 
 
 class UploadTrackRequest(AuthRequestBase):
@@ -63,7 +63,7 @@ class UploadTrackRequest(AuthRequestBase):
             raise ValueError("Missing body data: positions")
 
         # relevance factor for direct contacts is always 1
-        self._contacts = [tuple(i) + (1,) for i in body["contacts"]]
+        self._contacts = [(self._jwt["userId"],) + tuple(i) + (1,) for i in body["contacts"]]
         logger.debug("GOT CONTACTS DATA: {}".format(self._contacts))
         self._positions = [tuple(j) for j in body["positions"]]
         logger.debug("GOT POSITIONS DATA: {}".format(self._positions))
