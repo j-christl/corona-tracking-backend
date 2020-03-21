@@ -85,10 +85,13 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.wfile.write("Content-Type must be application/json".encode("utf-8"))
             self.wfile.write(b"\n")
             return
-        content_len = int(self.headers["Content-Length"])
+
         body = None
-        if content_len > 0:
-            body = json.loads(self.rfile.read(content_len))
+        content_len = self.headers["Content-Length"]
+        if content_len is not None:
+            content_len = int(content_len)
+            if content_len > 0:
+                body = json.loads(self.rfile.read(content_len))
 
         result = RequestFactory.get(method=method, path=path, params=params, body=body)
         if isinstance(result, ErrorResponse):
