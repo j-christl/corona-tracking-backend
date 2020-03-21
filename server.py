@@ -9,7 +9,7 @@ from cfg.config import config
 from backend.database import Database
 from rest.response import ErrorResponse
 from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest
-from rest.core import process_request
+from rest.core import RequestProcessor
 
 
 logger = logging.getLogger("corona")
@@ -30,7 +30,6 @@ class RequestFactory:
 
         split_path = path.split("/")
         split_path.pop(0)
-        # select
         try:
             if method == "POST":
                 if split_path[0] == "register":
@@ -47,7 +46,7 @@ class RequestFactory:
             else:
                 raise ValueError("Invalid path")
         except Exception as ex:
-            logger.error("EXCEPTION PROCESSING REQUEST: {} {}".format(type(ex), ex))
+            logger.error("EXCEPTION PARSING REQUEST: {} {}".format(type(ex), ex))
             return ErrorResponse(str(ex))
 
 
@@ -109,9 +108,6 @@ def main():
     if not Database.initialize():
         Database.terminate()
         return
-
-    #TODO remove
-    Database.insert_user()
 
     params = config("httpserver")
     hostname = params["host"]

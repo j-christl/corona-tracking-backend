@@ -40,6 +40,7 @@ POST /register
 **Response payload:**
 ```
 {
+  "userId": // user ID here
   "jwt": // JSON Web Token here
 }
   
