@@ -43,7 +43,7 @@ class RequestFactory:
                 else:
                     raise ValueError("Invalid path")
             elif method == "PATCH":
-                if split_path[0] == "status":
+                if split_path[0] == "userstatus":
                     return UpdateUserStatusRequest(params=params)
                 else:
                     raise ValueError("Invalid path")
