@@ -1,8 +1,8 @@
-import psycopg2
 import logging
 
-from config import config
+import psycopg2
 
+from config import config
 
 logger = logging.getLogger("corona")
 
@@ -38,6 +38,29 @@ class Database:
         logger.info("GENERATED USER ID: {}".format(user_id))
         cursor.close()
         return user_id
+
+    @staticmethod
+    def update_risk_level(user_id, level):
+        logger.info("Updating level of user " + str(user_id) + " to " + str(level))
+        cursor = Database._connection.cursor()
+        cursor.callproc("update_risk_level", (user_id, level))
+        Database._connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def insert_infected(user_id, firstname, lastname, phonenumber):
+        logger.info("Inserting infected user " + str(user_id))
+        cursor = Database._connection.cursor()
+        cursor.callproc("insert_infected", (user_id, firstname, lastname, phonenumber))
+        Database._connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def report_contact(reporting_user, contacted_user, contact_time):
+        cursor = Database._connection.cursor()
+        cursor.callproc("report_contact", (reporting_user, contacted_user, contact_time))
+        Database._connection.commit()
+        cursor.close()
 
     @staticmethod
     def execute_query(query):
