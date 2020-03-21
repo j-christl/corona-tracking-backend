@@ -86,7 +86,7 @@ jwt | `object` | JSON Web Token
 
 ## Update user status
 ```
-PATCH /status
+PATCH /userstatus
 ```
 
 **Parameters:**

@@ -3,7 +3,7 @@ import time
 import jwt
 
 from rest.request import RequestBase, RequestType
-from rest.response import CustomResponse, ErrorResponse
+from rest.response import CustomResponse, ErrorResponse, SuccessResponse
 from backend.database import Database
 from cfg.config import config
 
@@ -32,7 +32,23 @@ class RequestProcessor:
             "app": "corona_tracker"
         }
         params = config("auth")
-        print(params)
         secret = params["jwtsecret"]
         encoded = jwt.encode(payload=payload, key=secret, algorithm="HS256").decode("utf-8")
         return CustomResponse(success=True, message="", userId=user_id, jwt=encoded)
+
+
+    def _process_upload_track_request(self, request):
+        assert request.request_type is RequestType.UPLOAD_TRACK
+        logger.debug("PROCESSING UPLOAD TRACK REQUEST...")
+
+        # TODO
+
+        return ErrorResponse("POST /track not yet implemented")
+
+    def _process_UPDATE_USER_STATUS_request(self, request):
+        assert request.request_type is RequestType.UPDATE_USER_STATUS
+        logger.debug("PROCESSING UPDATE USER STATUS request")
+
+        # TODO
+
+        return ErrorResponse("PATCH /userstatus not yet implemented")
