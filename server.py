@@ -3,9 +3,14 @@ import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qsl
 from socketserver import ThreadingMixIn
+import json
 
-from config import config
-from database import Database
+from cfg.config import config
+from backend.database import Database
+from rest.response import ErrorResponse
+from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest
+from rest.core import RequestProcessor
+
 
 logger = logging.getLogger("corona")
 ch = logging.StreamHandler()
@@ -14,52 +19,85 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-class RequestFactor():
 
+request_processor = None
+
+
+class RequestFactory:
     @staticmethod
-    def get(method, path, params, body=None):
-        pass
+    def get(method, path, params, body):
+        assert isinstance(method, str)
+        assert isinstance(path, str)
+        assert isinstance(params, dict)
+        assert isinstance(body, dict)
 
-
+        split_path = path.split("/")
+        split_path.pop(0)
+        try:
+            if method == "POST":
+                if split_path[0] == "register":
+                    return RegisterUserRequest(params=params)
+                elif split_path[0] == "track":
+                    return UploadTrackRequest(params=params, body=body)
+                else:
+                    raise ValueError("Invalid path")
+            elif method == "PATCH":
+                if split_path[0] == "status":
+                    return UpdateUserStatusRequest(params=params)
+                else:
+                    raise ValueError("Invalid path")
+            else:
+                raise ValueError("Invalid path")
+        except Exception as ex:
+            logger.error("EXCEPTION PARSING REQUEST: {} {}".format(type(ex), ex))
+            return ErrorResponse(str(ex))
 
 
 class RequestHandler(BaseHTTPRequestHandler):
-    """ handle http GET requests. """
 
     def log_message(self, format, *args):
-        """ do nothing """
         return
 
-    def do_POST(self):
-        logger.info("POST: {}".format(self.path))
-        parsed_path = urlparse(self.path)
-        path = parsed_path.path
-        params = dict(parse_qsl(parsed_path.query))
-        logger.debug("PARAMS: {}".format(params))
-
-        # TODO get request body
-        # TODO update database
-
-        self.send_response(400)
-        self.end_headers()
-        self.wfile.write("Insert data here")
-        self.wfile.write(b"\n")
-
     def do_GET(self):
-        logger.info("GET: {}".format(self.path))
+        self._do_request("GET")
+
+    def do_POST(self):
+        self._do_request("POST")
+
+    def do_PATCH(self):
+        self._do_request("PATCH")
+
+    def _do_request(self, method):
+        assert isinstance(method, str)
+
+        logger.info(method + ": {}".format(self.path))
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         params = dict(parse_qsl(parsed_path.query))
         logger.debug("PARAMS: {}".format(params))
 
-        if path == "/test":
-            self.send_response(200)
+        # get request body
+        content_type = self.headers.get("Content-Type")
+        if content_type != "application/json":
+            self.send_response(415)
             self.end_headers()
-            self.wfile.write("Test success".encode("utf-8"))
+            self.wfile.write("Content-Type must be application/json".encode("utf-8"))
             self.wfile.write(b"\n")
+            return
+        content_len = int(self.headers.get("Content-Length"))
+        body = json.load(self.rfile.read(content_len))
+
+        result = RequestFactory.get(method=method, path=path, params=params, body=body)
+        if isinstance(result, ErrorResponse):
+            response = result
         else:
-            self.send_response(404)
-            self.end_headers()
+            logger.debug('CREATED REQUEST: {} {}'.format(type(result), result))
+            response = request_processor.process_request(request=result)
+
+        self.send_response(response.response_code)
+        self.end_headers()
+        self.wfile.write(response.to_string().encode("utf-8"))
+        self.wfile.write(b"\n")
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
@@ -72,8 +110,8 @@ def main():
         Database.terminate()
         return
 
-    #TODO remove
-    Database.insert_user()
+    global request_processor
+    request_processor = RequestProcessor()
 
     params = config("httpserver")
     hostname = params["host"]

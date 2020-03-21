@@ -19,7 +19,7 @@ Backend of the Corona Tracking App, developed in the context of the #WirVsVirus 
 - All responses are in the following format:
 ```
 {
-    "success": True,
+    "success": True/False,
     "messages": "Contains message if something went wrong"
     "payload": {
         // request payload here
@@ -32,9 +32,23 @@ GET /test
 ```
 Just for testing
 
+**Parameters:**
+
+Name | Type | Description
+--- | :---: | ---
+jwt | `object` | JSON Web Token
+
 ## Register User
 ```
 POST /register
+```
+
+**Response payload:**
+```
+{
+  "userId": // user ID here
+  "jwt": // JSON Web Token here
+}
 ```
 
 ## Upload tracking data
@@ -42,23 +56,43 @@ POST /register
 POST /track
 ```
 
+**Parameters:**
+
+Name | Type | Description
+--- | :---: | ---
+jwt | `object` | JSON Web Token
+
 **Request body:**
 ```
 {
   "contacts": [
-    {
+    [
       TIMESTAMP,
       USER_ID_0,
       USER_ID_1
-    },
+    ],
     ...
   ],
   "positions": [
-    {
+    [
       TIMESTAMP,
       LONGITUDE,
       LATITUDE
-    }
+    ],
+    ...
   ]
 }
 ```
+
+## Update user status
+```
+PATCH /status
+```
+
+**Parameters:**
+
+Name | Type | Description
+--- | :---: | ---
+jwt | `object` | JSON Web Token
+userId | `int64` | 
+status | `string` | User health status
