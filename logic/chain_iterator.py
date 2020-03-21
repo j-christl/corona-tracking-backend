@@ -16,7 +16,7 @@ class ChainIterator:
             risk_group = Database.get_users_by_risk_level(5)
 
             for risk_id in risk_group:
-                contact_group = Database.get_contacts_after_timestamp(risk_id, datetime.now() - timedelta(hours=1))
+                contact_group = Database.get_contacts_after_timestamp(risk_id[0], datetime.now() - timedelta(hours=1))
 
                 for contact in contact_group:
                     print(contact)
