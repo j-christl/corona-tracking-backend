@@ -6,6 +6,9 @@ Backend of the Corona Tracking App, developed in the context of the #WirVsVirus 
 - websockets
 - psycopg2-binary
 
+# Starting the server
+- Enter "python3 server.py" in the terminal
+
 # REST API Documentation
 - Content-Type must be application/json
 ```
