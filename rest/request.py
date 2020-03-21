@@ -1,5 +1,8 @@
 import time
 from enum import Enum
+import jwt
+
+from cfg.config import config
 
 
 class RequestType(Enum):
@@ -15,10 +18,8 @@ class UserStatus(Enum):
 
 class RequestBase:
 
-    def __init__(self, request_type, params):
+    def __init__(self, request_type):
         assert isinstance(request_type, RequestType)
-        assert isinstance(params, dict)
-
         self._request_type = request_type
 
     def get_request_type(self):
@@ -29,16 +30,51 @@ class RequestBase:
 
 class RegisterUserRequest(RequestBase):
     def __init__(self, params):
-        super().__init__(RequestType.REGISTER_USER, params)
+        super().__init__(RequestType.REGISTER_USER)
 
 
-class UploadTrackRequest(RequestBase):
+class AuthRequestBase(RequestBase):
+
+    def __init__(self, request_type, params):
+        assert isinstance(params, dict)
+        super().__init__(request_type)
+
+        if "jwt" not in params:
+            raise ValueError("Missing request parameter: jwt")
+        secret = config("auth")["jwtSecret"]
+        jwt.decode(params["jwt"])  # throws exeption if validation fails
+
+
+class UploadTrackRequest(AuthRequestBase):
 
     def __init__(self, params, body):
         super().__init__(RequestType.UPLOAD_TRACK, params)
 
+        # TODO
 
-class UpdateUserStatusRequest(RequestBase):
+
+class UpdateUserStatusRequest(AuthRequestBase):
 
     def __init__(self, params):
         super().__init__(RequestType.UPDATE_USER_STATUS, params)
+
+        if "userId" not in params:
+            raise ValueError("Missing request parameter: userId")
+        self._user_id = params["userId"]
+        if "status" not in params:
+            raise ValueError("Missing request parameter: status")
+        status = params["status"]
+        try:
+            self._new_user_status = UserStatus[status]
+        except Exception as e:
+            raise ValueError("Invalid request parameter value: status = " + status)
+
+    def get_user_id(self):
+        return self._user_id
+
+    def get_new_user_status(self):
+        return self._new_user_status
+
+    user_id = property(get_user_id)
+    new_user_status = property(get_new_user_status)
+

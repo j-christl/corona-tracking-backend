@@ -20,6 +20,9 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
+request_processor = None
+
+
 class RequestFactory:
     @staticmethod
     def get(method, path, params, body):
@@ -51,10 +54,8 @@ class RequestFactory:
 
 
 class RequestHandler(BaseHTTPRequestHandler):
-    """ handle http GET requests. """
 
     def log_message(self, format, *args):
-        """ do nothing """
         return
 
     def do_GET(self):
@@ -78,7 +79,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         # get request body
         content_type = self.headers.get("Content-Type")
         if content_type != "application/json":
-            self.response = 415
+            self.send_response(415)
             self.end_headers()
             self.wfile.write("Content-Type must be application/json".encode("utf-8"))
             self.wfile.write(b"\n")
@@ -91,7 +92,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             response = result
         else:
             logger.debug('CREATED REQUEST: {} {}'.format(type(result), result))
-            response = process_request(request=result)
+            response = request_processor.process_request(request=result)
 
         self.send_response(response.response_code)
         self.end_headers()
@@ -108,6 +109,9 @@ def main():
     if not Database.initialize():
         Database.terminate()
         return
+
+    global request_processor
+    request_processor = RequestProcessor()
 
     params = config("httpserver")
     hostname = params["host"]

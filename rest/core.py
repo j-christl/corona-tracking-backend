@@ -5,10 +5,9 @@ import jwt
 from rest.request import RequestBase, RequestType
 from rest.response import CustomResponse, ErrorResponse
 from backend.database import Database
+from cfg.config import config
 
 logger = logging.getLogger("corona")
-
-SECRET = "supersecretkey"
 
 
 class RequestProcessor:
@@ -32,5 +31,6 @@ class RequestProcessor:
             "time": int(time.time()),
             "app": "corona_tracker"
         }
-        encoded = jwt.encode(payload=payload, key=SECRET, algorithm="HS256")
+        secret = config("auth")["jwtSecret"]
+        encoded = jwt.encode(payload=payload, key=secret, algorithm="HS256")
         return CustomResponse(success=True, message="", userId=user_id, jwt=encoded)

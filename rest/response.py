@@ -27,11 +27,9 @@ class ResponseBase:
         return self._message
 
     def get_response_payload(self):
-        """ get payload. """
         return self._payload
 
     def to_string(self):
-        """ assemble response string. """
         return json.dumps({"success": self._success,
                            "message": self._message,
                            "payload": self._payload})
