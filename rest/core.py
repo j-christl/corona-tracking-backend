@@ -13,12 +13,12 @@ logger = logging.getLogger("corona")
 class RequestProcessor:
 
     def process_request(self, request):
-        assert isinstance(RequestBase)
+        assert isinstance(request, RequestBase)
         request_type = request.request_type
         return getattr(self, "_process_" + request_type.name.lower() + "_request")(request)
 
     def _process_register_user_request(self, request):
-        assert request.request_type is RequestType
+        assert request.request_type is RequestType.REGISTER_USER
         logger.debug("PROCESSING REGISTER USER REQUEST...")
         try:
             user_id = Database.insert_user()

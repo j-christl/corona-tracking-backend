@@ -29,7 +29,6 @@ class RequestFactory:
         assert isinstance(method, str)
         assert isinstance(path, str)
         assert isinstance(params, dict)
-        assert isinstance(body, dict)
 
         split_path = path.split("/")
         split_path.pop(0)
@@ -38,6 +37,8 @@ class RequestFactory:
                 if split_path[0] == "register":
                     return RegisterUserRequest(params=params)
                 elif split_path[0] == "track":
+                    if body is None:
+                        raise ValueError("Missing request body")
                     return UploadTrackRequest(params=params, body=body)
                 else:
                     raise ValueError("Invalid path")
@@ -85,7 +86,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(b"\n")
             return
         content_len = int(self.headers["Content-Length"])
-        body = json.load(self.rfile.read(content_len))
+        body = None
+        if content_len > 0:
+            body = json.loads(self.rfile.read(content_len))
 
         result = RequestFactory.get(method=method, path=path, params=params, body=body)
         if isinstance(result, ErrorResponse):
