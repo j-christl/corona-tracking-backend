@@ -8,7 +8,7 @@ def config(section):
     parser.read("config.ini")
 
     output = {}
-    filename = "../config.ini"
+    filename = "config.ini"
     if parser.has_section(section):
         params = parser.items(section)
         for param in params:

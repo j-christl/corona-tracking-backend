@@ -31,6 +31,8 @@ class RequestProcessor:
             "time": int(time.time()),
             "app": "corona_tracker"
         }
-        secret = config("auth")["jwtSecret"]
+        params = config("auth")
+        print(params)
+        secret = params["jwtSecret"]
         encoded = jwt.encode(payload=payload, key=secret, algorithm="HS256")
         return CustomResponse(success=True, message="", userId=user_id, jwt=encoded)
