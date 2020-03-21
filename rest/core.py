@@ -2,7 +2,7 @@ import logging
 import time
 import jwt
 
-from rest.request import RequestBase, RequestType
+from rest.request import RequestBase, RequestType, UploadTrackRequest, UpdateUserStatusRequest
 from rest.response import CustomResponse, ErrorResponse, SuccessResponse
 from backend.database import Database
 from cfg.config import config
@@ -38,17 +38,17 @@ class RequestProcessor:
 
 
     def _process_upload_track_request(self, request):
-        assert request.request_type is RequestType.UPLOAD_TRACK
+        assert isinstance(request, UploadTrackRequest)
         logger.debug("PROCESSING UPLOAD TRACK REQUEST...")
 
-        # TODO
+        # TODO: insert into database
 
         return ErrorResponse("POST /track not yet implemented")
 
     def _process_UPDATE_USER_STATUS_request(self, request):
-        assert request.request_type is RequestType.UPDATE_USER_STATUS
+        assert isinstance(request, UpdateUserStatusRequest)
         logger.debug("PROCESSING UPDATE USER STATUS request")
 
-        # TODO
+        # TODO: update database
 
         return ErrorResponse("PATCH /userstatus not yet implemented")
