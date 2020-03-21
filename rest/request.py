@@ -45,6 +45,7 @@ class AuthRequestBase(RequestBase):
         if "jwt" not in params:
             raise ValueError("Missing request parameter: jwt")
         secret = config("auth")["jwtsecret"]
+        secret = secret.encode("utf-8")
         decoded = jwt.decode(params["jwt"], secret,  algorithms=["HS256"])  # throws exeption if validation fails
         logger.debug("DECODED JWT: {}".format(decoded))
 
