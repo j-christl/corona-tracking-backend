@@ -12,6 +12,7 @@ class RequestType(Enum):
     REGISTER_USER = 0
     UPLOAD_TRACK = 1
     UPDATE_USER_STATUS = 2
+    GET_STATUS = 3
 
 
 class UserStatus(Enum):
@@ -102,4 +103,9 @@ class UpdateUserStatusRequest(AuthRequestBase):
 
     user_id = property(get_user_id)
     new_user_status = property(get_new_user_status)
+
+
+#class GetUserStatusRequest(AuthRequestBase):
+
+
 

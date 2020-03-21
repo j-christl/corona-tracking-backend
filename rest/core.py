@@ -41,18 +41,26 @@ class RequestProcessor:
         assert isinstance(request, UploadTrackRequest)
         logger.debug("PROCESSING UPLOAD TRACK REQUEST...")
 
-        # TODO: insert into database
         contacts = request.contacts
         postions = request.positions
-
-        return ErrorResponse("POST /track not yet implemented")
+        try:
+            # TODO: insert into database
+            pass
+        except Exception as ex:
+            logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
+            return ErrorResponse("Database error")
+        return SuccessResponse("Upload succeeded")
 
     def _process_update_user_status_request(self, request):
         assert isinstance(request, UpdateUserStatusRequest)
         logger.debug("PROCESSING UPDATE USER STATUS request")
 
-        # TODO: update database
         user_id = request.user_id
         new_user_status = request.new_user_status
-
-        return ErrorResponse("PATCH /userstatus not yet implemented")
+        try:
+            # TODO: update database
+            pass
+        except Exception as ex:
+            logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
+            return ErrorResponse("Database error")
+        return SuccessResponse("Status update succeeded")

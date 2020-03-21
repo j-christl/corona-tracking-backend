@@ -27,18 +27,6 @@ Backend of the Corona Tracking App, developed in the context of the #WirVsVirus 
     }
 }
 ```
-## Test
-```
-GET /test
-```
-Just for testing
-
-**Parameters:**
-
-Name | Type | Description
---- | :---: | ---
-jwt | `object` | JSON Web Token
-
 ## Register User
 ```
 POST /register
@@ -95,4 +83,16 @@ Name | Type | Description
 --- | :---: | ---
 jwt | `object` | JSON Web Token
 userId | `int64` | 
-status | `string` | User health status
+status | `string` | User health status; Can be HEALTHY or INFECTED
+
+## Get user status
+```
+GET /userstatus
+```
+
+**Parameters:**
+
+Name | Type | Description
+--- | :---: | ---
+jwt | `object` | JSON Web Token
+userId | `int64` | 
