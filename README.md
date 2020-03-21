@@ -6,6 +6,7 @@ Backend of the Corona Tracking App, developed in the context of the #WirVsVirus 
 - websockets
 - psycopg2-binary
 - pyjwt
+- boto3
 
 # Setup
 - To install all packages, run "pip3 install -r requirements.txt"
