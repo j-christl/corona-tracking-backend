@@ -65,9 +65,9 @@ class Database:
     @staticmethod
     def get_users_by_risk_level(risk_level):
         cursor = Database._connection.cursor()
-        cursor.callproc("get_users_by_risk_level", (risk_level))
+        cursor.callproc("get_users_by_risk_level", (risk_level,))
         Database._connection.commit()
-        users = cursor.fetchmany
+        users = cursor.fetchmany()
         cursor.close()
         return users
 
@@ -76,7 +76,7 @@ class Database:
         cursor = Database._connection.cursor()
         cursor.callproc("get_contacts_after_timestamp", (user_id, time_thresh))
         Database._connection.commit()
-        contacted_users = cursor.fetchmany
+        contacted_users = cursor.fetchmany()
         cursor.close()
         return contacted_users
 

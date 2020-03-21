@@ -3,7 +3,6 @@ import json
 
 class ResponseBase:
     def __init__(self, success, message=None, payload=None):
-        """ do general response stuff. """
         assert isinstance(success, bool)
         if message is None:
             message = str(type(self))

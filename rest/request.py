@@ -62,7 +62,8 @@ class UploadTrackRequest(AuthRequestBase):
         if "positions" not in body:
             raise ValueError("Missing body data: positions")
 
-        self._contacts = [tuple(i) for i in body["contacts"]]
+        # relevance factor for direct contacts is always 1
+        self._contacts = [tuple(i) for i in body["contacts"].append(1)]
         logger.debug("GOT CONTACTS DATA: {}".format(self._contacts))
         self._positions = [tuple(j) for j in body["positions"]]
         logger.debug("GOT POSITIONS DATA: {}".format(self._positions))

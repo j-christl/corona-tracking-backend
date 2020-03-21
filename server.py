@@ -10,6 +10,7 @@ from backend.database import Database
 from rest.response import ErrorResponse
 from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest
 from rest.core import RequestProcessor
+from logic.chain_iterator import ChainIterator
 
 
 logger = logging.getLogger("corona")
@@ -115,6 +116,8 @@ def main():
     if not Database.initialize():
         Database.terminate()
         return
+
+    ChainIterator.process_chains()
 
     global request_processor
     request_processor = RequestProcessor()
