@@ -37,8 +37,6 @@ class RequestFactory:
                 if split_path[0] == "register":
                     return RegisterUserRequest(params=params)
                 elif split_path[0] == "track":
-                    if body is None:
-                        raise ValueError("Missing request body")
                     return UploadTrackRequest(params=params, body=body)
                 else:
                     raise ValueError("Invalid path")

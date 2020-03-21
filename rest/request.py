@@ -54,6 +54,9 @@ class UploadTrackRequest(AuthRequestBase):
     def __init__(self, params, body):
         super().__init__(RequestType.UPLOAD_TRACK, params)
 
+        if body is None:
+            raise ValueError("Missing request body")
+
 
 class UpdateUserStatusRequest(AuthRequestBase):
 
