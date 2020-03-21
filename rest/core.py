@@ -47,10 +47,12 @@ class RequestProcessor:
 
         return ErrorResponse("POST /track not yet implemented")
 
-    def _process_UPDATE_USER_STATUS_request(self, request):
+    def _process_update_update_status_request(self, request):
         assert isinstance(request, UpdateUserStatusRequest)
         logger.debug("PROCESSING UPDATE USER STATUS request")
 
         # TODO: update database
+        user_id = request.user_id
+        new_user_status = request.new_user_status
 
         return ErrorResponse("PATCH /userstatus not yet implemented")
