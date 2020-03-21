@@ -56,9 +56,9 @@ class Database:
         cursor.close()
 
     @staticmethod
-    def report_contact(reporting_user, contacted_user, contact_time):
+    def report_contact(reporting_user, contacted_user, contact_time, relevance_factor):
         cursor = Database._connection.cursor()
-        cursor.callproc("report_contact", (reporting_user, contacted_user, contact_time))
+        cursor.callproc("report_contact", (reporting_user, contacted_user, contact_time, relevance_factor))
         Database._connection.commit()
         cursor.close()
 
