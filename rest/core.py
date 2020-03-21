@@ -34,5 +34,5 @@ class RequestProcessor:
         params = config("auth")
         print(params)
         secret = params["jwtsecret"]
-        encoded = jwt.encode(payload=payload, key=secret, algorithm="HS256")
+        encoded = jwt.encode(payload=payload, key=secret, algorithm="HS256").decode("utf-8")
         return CustomResponse(success=True, message="", userId=user_id, jwt=encoded)
