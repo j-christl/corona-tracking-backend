@@ -42,6 +42,8 @@ class RequestProcessor:
         logger.debug("PROCESSING UPLOAD TRACK REQUEST...")
 
         # TODO: insert into database
+        contacts = request.contacts
+        postions = request.positions
 
         return ErrorResponse("POST /track not yet implemented")
 
