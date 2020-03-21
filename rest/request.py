@@ -57,6 +57,24 @@ class UploadTrackRequest(AuthRequestBase):
 
         if body is None:
             raise ValueError("Missing request body")
+        if "contacts" not in body:
+            raise ValueError("Missing body data: contacts")
+        if "positions" not in body:
+            raise ValueError("Missing body data: positions")
+
+        self._contacts = [tuple(i) for i in body["contacts"]]
+        logger.debug("GOT CONTACTS DATA: {}".format(self._contacts))
+        self._positions = [tuple(j) for j in body["positions"]]
+        logger.debug("GOT POSITIONS DATA: {}".format(self._positions))
+
+    def get_contacts(self):
+        return self._contacts
+
+    def get_positions(self):
+        return self._positions
+
+    contacts = property(get_contacts)
+    positions = property(get_positions)
 
 
 class UpdateUserStatusRequest(AuthRequestBase):
