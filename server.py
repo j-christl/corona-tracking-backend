@@ -1,7 +1,8 @@
 import logging
 import sys
-from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qsl
+from socketserver import ThreadingMixIn
 
 from config import config
 from database import Database
@@ -12,6 +13,14 @@ logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
+
+class RequestFactor():
+
+    @staticmethod
+    def get(method, path, params, body=None):
+        pass
+
+
 
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -52,11 +61,19 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
+
+class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+
+
 def main():
 
     if not Database.initialize():
         Database.terminate()
         return
+
+    #TODO remove
+    Database.insert_user()
 
     params = config("httpserver")
     hostname = params["host"]

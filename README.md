@@ -45,13 +45,20 @@ POST /track
 **Request body:**
 ```
 {
-  [
+  "contacts": [
     {
-        timestamp: 123456
-        contactId0: 123456
-        contactId1: 123456
-    }
+      TIMESTAMP,
+      USER_ID_0,
+      USER_ID_1
+    },
     ...
+  ],
+  "positions": [
+    {
+      TIMESTAMP,
+      LONGITUDE,
+      LATITUDE
+    }
   ]
 }
 ```
