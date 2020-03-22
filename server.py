@@ -4,6 +4,8 @@ import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 from urllib.parse import urlparse, parse_qsl
+import sched
+import time
 
 from backend.database import Database
 from cfg.config import config
@@ -116,6 +118,12 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
 
+chain_scheduler = None
+
+def run_chain_calc():
+    logger.debug("CALCULATING INFECTION CHAINS...")
+    chain_scheduler.enter(5, 1, run_chain_calc)
+
 def main():
 
     if not Database.initialize():
@@ -124,6 +132,11 @@ def main():
 
     global request_processor
     request_processor = RequestProcessor()
+
+    global chain_scheduler
+    chain_scheduler = sched.scheduler(time.time, time.sleep)
+    chain_scheduler.enter(5, 1, run_chain_calc)
+    #chain_scheduler.run()
 
     params = config("httpserver")
     hostname = params["host"]
