@@ -1,11 +1,12 @@
 import logging
 import time
+
 import jwt
 
-from rest.request import RequestBase, RequestType, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
-from rest.response import CustomResponse, ErrorResponse, SuccessResponse
 from backend.database import Database
 from cfg.config import config
+from rest.request import RequestBase, RequestType, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
+from rest.response import CustomResponse, ErrorResponse, SuccessResponse
 
 logger = logging.getLogger("corona")
 
@@ -46,9 +47,7 @@ class RequestProcessor:
         user_id = request.user_id
         try:
             for contact in contacts:
-                entry = (user_id, contact[0], contact[1])
-
-                # TODO: insert into database
+                Database.report_contact(user_id, contact[0], contact[1])
 
             pass
         except Exception as ex:
