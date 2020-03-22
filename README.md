@@ -100,3 +100,17 @@ jwt | `object` | JSON Web Token
   "status": // user status here
 }
 ```
+
+## Upload Personal Data
+```
+POST /infected
+```
+
+**Parameters:**
+
+Name | Type | Description
+--- | :---: | ---
+jwt | `object` | JSON Web Token
+firstname | `string` | First name
+lastname | `string` | Last name
+phonenumber | `string` | Phone number
