@@ -47,7 +47,7 @@ class RequestProcessor:
         user_id = request.user_id
         try:
             for contact in contacts:
-                Database.report_contact(user_id, contact[0], contact[1])
+                Database.report_contact(user_id, contact[0], contact[1], contact[2])
 
             pass
         except Exception as ex:
