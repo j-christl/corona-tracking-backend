@@ -66,12 +66,10 @@ class UploadTrackRequest(AuthRequestBase):
 
         self._user_id = self._jwt["userId"]
 
-        # TODO: parse timestamp
-        # datetime.strptime("2016-11-16 06:55:40.11", '%Y-%m-%d %H:%M:%S.%f')
         # relevance factor for direct contacts is always 1
-        self._contacts = [(self._jwt["userId"],) + tuple(i) + (1,) for i in body["contacts"]]
+        self._contacts = [(self._jwt["userId"],) + (i[0], datetime.strptime(i[1], '%Y-%m-%d %H:%M:%S.%f')) + (1,) for i in body["contacts"]]
         logger.debug("GOT CONTACTS DATA: {}".format(self._contacts))
-        self._positions = [tuple(j) for j in body["positions"]]
+        self._positions = [(j[0], j[1], datetime.strptime(j[2], '%Y-%m-%d %H:%M:%S.%f')) for j in body["positions"]]
         logger.debug("GOT POSITIONS DATA: {}".format(self._positions))
 
     def get_user_id(self):
