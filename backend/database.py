@@ -1,7 +1,6 @@
 import logging
 
 import psycopg2
-from datetime import datetime
 
 from cfg.config import config
 
@@ -80,6 +79,31 @@ class Database:
         contacted_users = cursor.fetchall()
         cursor.close()
         return contacted_users
+
+    @staticmethod
+    def insert_geo_data(user_id, lat, lon, gps_time):
+        cursor = Database._connection.cursor()
+        cursor.callproc("insert_geo_data", (user_id, lat, lon, gps_time))
+        Database._connection.commit()
+        cursor.close()
+
+    @staticmethod
+    def get_geo_data_after_timestamp(user_id, time_thresh):
+        cursor = Database._connection.cursor()
+        cursor.callproc("get_geo_data_after_timestamp", (user_id, time_thresh))
+        Database._connection.commit()
+        geo_data = cursor.fetchall()
+        cursor.close()
+        return geo_data
+
+    @staticmethod
+    def get_users_risk_level(user_id):
+        cursor = Database._connection.cursor()
+        cursor.callproc("get_users_risk_level", (user_id,))
+        Database._connection.commit()
+        risk_level = cursor.fetchone()
+        cursor.close()
+        return risk_level
 
     @staticmethod
     def execute_query(query):

@@ -43,13 +43,15 @@ class RequestProcessor:
         logger.debug("PROCESSING UPLOAD TRACK REQUEST...")
 
         contacts = request.contacts
-        postions = request.positions
+        positions = request.positions
         user_id = request.user_id
         try:
             for contact in contacts:
-                Database.report_contact(user_id, contact[0], contact[1])
+                Database.report_contact(user_id, contact[0], contact[1], 1.0)
 
-            pass
+            for position in positions:
+                Database.insert_geo_data(user_id, position[0], position[1], position[2])
+
         except Exception as ex:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
             return ErrorResponse("Database error")
@@ -61,9 +63,9 @@ class RequestProcessor:
 
         user_id = request.user_id
         new_user_status = request.new_user_status
+
         try:
-            # TODO: update database
-            pass
+            Database.update_risk_level(user_id, new_user_status)
         except Exception as ex:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
             return ErrorResponse("Database error")
@@ -74,11 +76,10 @@ class RequestProcessor:
         logger.debug("PROCESSING UPDATE USER STATUS REQUEST...")
 
         user_id = request.user_id
-        user_status = None
+        risk_level = None
         try:
-            # TODO: get user status from database
-            pass
+            risk_level = Database.get_users_risk_level(user_id)
         except Exception as ex:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
             return ErrorResponse("Database error")
-        return CustomResponse(success=True, message="", status=user_status)
+        return CustomResponse(success=True, message="", status=risk_level)
