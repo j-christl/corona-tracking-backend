@@ -7,7 +7,6 @@ from urllib.parse import urlparse, parse_qsl
 
 from backend.database import Database
 from cfg.config import config
-from logic.chain_iterator import ChainIterator
 from rest.core import RequestProcessor
 from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
 from rest.response import ErrorResponse
@@ -122,8 +121,6 @@ def main():
     if not Database.initialize():
         Database.terminate()
         return
-
-    ChainIterator.process_chains()
 
     global request_processor
     request_processor = RequestProcessor()
