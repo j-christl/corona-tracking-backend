@@ -115,6 +115,16 @@ class Database:
         return risk_level
 
     @staticmethod
+    def get_users_below_risk_level(risk_level):
+        logger.info("Getting users below risk_level {}".format(risk_level))
+        cursor = Database._connection.cursor()
+        cursor.callproc("get_users_below_risk_level", (risk_level,))
+        Database._connection.commit()
+        users = cursor.fetchall()
+        cursor.close()
+        return users
+
+    @staticmethod
     def execute_query(query):
         """ Execute a SQL query """
         assert isinstance(query, str)

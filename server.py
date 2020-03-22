@@ -1,20 +1,21 @@
 import json
 import logging
+import sched
 import sys
+import threading
+import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 from urllib.parse import urlparse, parse_qsl
-import sched
-import time
-import threading
 
 from backend.database import Database
 from cfg.config import config
+from logic.chain_iterator import ChainIterator
+from logic.geo_processor import GeoProcessor
 from rest.core import RequestProcessor
 from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest, \
     UploadPersonalDataRequest
 from rest.response import ErrorResponse
-from logic.chain_iterator import ChainIterator
 
 logger = logging.getLogger("corona")
 ch = logging.StreamHandler()
@@ -151,7 +152,8 @@ def thread_func():
 def run_chain_calc():
     global running
     if running:
-        logger.debug("CALCULATING INFECTION CHAINS...")
+        logger.debug("ITERATING GEO DATA AND CALCULATING INFECTION CHAINS...")
+        GeoProcessor.iterate_geo_data()
         ChainIterator.process_chains()
         # start next calculation after 1 hour
         global event

@@ -10,6 +10,20 @@ logger = logging.getLogger("corona")
 class ChainIterator:
 
     @staticmethod
+    def process_contact(user_id1, user_id2, relevance_factor):
+        logger.info("Processing contact between {} and {} with relevance_factor {}".format(user_id1, user_id2,
+                                                                                           relevance_factor))
+
+        risk_level1 = Database.get_users_risk_level(user_id1)
+        risk_level2 = Database.get_users_risk_level(user_id2)
+
+        try:
+            Database.update_risk_level(user_id2, min(int(risk_level2 + risk_level1 * relevance_factor), 4))
+        except Exception as ex:
+            logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
+            return ErrorResponse("Database error")
+
+    @staticmethod
     def process_contacts(contact_group):
         for contact in contact_group:
             try:
