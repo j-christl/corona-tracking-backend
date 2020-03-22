@@ -1,8 +1,8 @@
-import time
-from enum import Enum
-import jwt
 import logging
 from datetime import datetime
+from enum import Enum
+
+import jwt
 
 from cfg.config import config
 
@@ -14,6 +14,7 @@ class RequestType(Enum):
     UPLOAD_TRACK = 1
     UPDATE_USER_STATUS = 2
     GET_USER_STATUS = 3
+    UPLOAD_PERSONAL_DATA = 4
 
 
 class UserStatus(Enum):
@@ -123,4 +124,37 @@ class GetUserStatusRequest(AuthRequestBase):
     user_id = property(get_user_id)
 
 
+class UploadPersonalDataRequest(AuthRequestBase):
 
+    def __init__(self, params):
+        super().__init__(RequestType.UPLOAD_PERSONAL_DATA, params)
+
+        if "firstname" not in params:
+            raise ValueError("Missing request parameter: firstname")
+        if "lastname" not in params:
+            raise ValueError("Missing request parameter: lastname")
+        if "phonenumber" not in params:
+            raise ValueError("Missing request parameter: phonenumber")
+
+        self._firstname = params["firstname"]
+        self._lastname = params["lastname"]
+        self._phonenumber = params["phonenumber"]
+
+        self._user_id = self._jwt["userId"]
+
+    def get_user_id(self):
+        return self._user_id
+
+    def get_firstname(self):
+        return self._firstname
+
+    def get_lastname(self):
+        return self._lastname
+
+    def get_phonenumber(self):
+        return self._phonenumber
+
+    user_id = property(get_user_id)
+    firstname = property(get_firstname)
+    lastname = property(get_lastname)
+    phonenumber = property(get_phonenumber)

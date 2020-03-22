@@ -36,6 +36,8 @@ class RequestFactory:
                     return RegisterUserRequest(params=params)
                 elif split_path[0] == "track":
                     return UploadTrackRequest(params=params, body=body)
+                elif split_path[0] == "infected":
+                    return UploadPersonalDataRequest(params=params)
                 else:
                     raise ValueError("Invalid path")
             elif method == "PATCH":
