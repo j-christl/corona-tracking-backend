@@ -1,17 +1,16 @@
+import json
 import logging
 import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qsl
 from socketserver import ThreadingMixIn
-import json
+from urllib.parse import urlparse, parse_qsl
 
-from cfg.config import config
 from backend.database import Database
-from rest.response import ErrorResponse
-from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
-from rest.core import RequestProcessor
+from cfg.config import config
 from logic.chain_iterator import ChainIterator
-
+from rest.core import RequestProcessor
+from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
+from rest.response import ErrorResponse
 
 logger = logging.getLogger("corona")
 ch = logging.StreamHandler()
@@ -19,7 +18,6 @@ logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
-
 
 request_processor = None
 
@@ -75,7 +73,8 @@ class RequestHandler(BaseHTTPRequestHandler):
     def _do_request(self, method):
         assert isinstance(method, str)
 
-        logger.info(method + ": {}".format(self.path))
+        remote_ip = self.request.headers.remote_ip
+        logger.info("Incoming request from {}: {}: {}".format(remote_ip, method, self.path))
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         params = dict(parse_qsl(parsed_path.query))
