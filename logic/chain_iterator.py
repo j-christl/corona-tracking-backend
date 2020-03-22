@@ -14,9 +14,9 @@ class ChainIterator:
         for contact in contact_group:
             try:
                 if contact[1] > contact[3]:
-                    Database.update_risk_level(contact[2], int(contact[3] + contact[1] * contact[5]) % 5)
+                    Database.update_risk_level(contact[2], min(int(contact[3] + contact[1] * contact[5]), 4))
                 else:
-                    Database.update_risk_level(contact[0], int(contact[1] + contact[3] * contact[5]) % 5)
+                    Database.update_risk_level(contact[0], min(int(contact[1] + contact[3] * contact[5]), 4))
             except Exception as ex:
                 logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
                 return ErrorResponse("Database error")
