@@ -47,9 +47,7 @@ class RequestProcessor:
         user_id = request.user_id
         try:
             for contact in contacts:
-                Database.report_contact(user_id, contact[0], contact[1], contact[2])
-
-            pass
+                Database.report_contact(contact[0], contact[1], contact[2], contact[3])
         except Exception as ex:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
             return ErrorResponse("Database error")
