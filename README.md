@@ -16,12 +16,11 @@ Backend of the Corona Tracking App, developed in the context of the #WirVsVirus 
 
 # REST API Documentation
 - Content-Type must be application/json
-- Use Unix Timestamps
 - All responses are in the following format:
 ```
 {
     "success": True/False,
-    "message": "Contains message if something went wrong"
+    "message": "Contains message if something went wrong",
     "payload": {
         // request payload here
     }
@@ -82,7 +81,6 @@ PATCH /userstatus
 Name | Type | Description
 --- | :---: | ---
 jwt | `object` | JSON Web Token
-userId | `int64` | 
 status | `string` | User health status; Can be HEALTHY or INFECTED
 
 ## Get user status
@@ -95,4 +93,10 @@ GET /userstatus
 Name | Type | Description
 --- | :---: | ---
 jwt | `object` | JSON Web Token
-userId | `int64` | 
+
+**Response payload:**
+```
+{
+  "status": // user status here
+}
+```

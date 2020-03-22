@@ -2,6 +2,7 @@ import time
 from enum import Enum
 import jwt
 import logging
+from datetime import datetime
 
 from cfg.config import config
 
@@ -12,7 +13,7 @@ class RequestType(Enum):
     REGISTER_USER = 0
     UPLOAD_TRACK = 1
     UPDATE_USER_STATUS = 2
-    GET_STATUS = 3
+    GET_USER_STATUS = 3
 
 
 class UserStatus(Enum):
@@ -63,6 +64,8 @@ class UploadTrackRequest(AuthRequestBase):
         if "positions" not in body:
             raise ValueError("Missing body data: positions")
 
+        # TODO: parse timestamp
+        # datetime.strptime("2016-11-16 06:55:40.11", '%Y-%m-%d %H:%M:%S.%f')
         # relevance factor for direct contacts is always 1
         self._contacts = [(self._jwt["userId"],) + tuple(i) + (1,) for i in body["contacts"]]
         logger.debug("GOT CONTACTS DATA: {}".format(self._contacts))
@@ -84,12 +87,10 @@ class UpdateUserStatusRequest(AuthRequestBase):
     def __init__(self, params):
         super().__init__(RequestType.UPDATE_USER_STATUS, params)
 
-        if "userId" not in params:
-            raise ValueError("Missing request parameter: userId")
-        self._user_id = params["userId"]
         if "status" not in params:
             raise ValueError("Missing request parameter: status")
         status = params["status"]
+        self._user_id = self._jwt["userId"]
         try:
             self._new_user_status = UserStatus[status]
         except Exception as e:
@@ -105,7 +106,17 @@ class UpdateUserStatusRequest(AuthRequestBase):
     new_user_status = property(get_new_user_status)
 
 
-#class GetUserStatusRequest(AuthRequestBase):
+class GetUserStatusRequest(AuthRequestBase):
+
+    def __init__(self, params):
+        super().__init__(RequestType.GET_USER_STATUS, params)
+
+        self._user_id = self._jwt["userId"]
+
+    def get_user_id(self):
+        return self._user_id
+
+    user_id = property(get_user_id)
 
 
 

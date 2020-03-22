@@ -8,7 +8,7 @@ import json
 from cfg.config import config
 from backend.database import Database
 from rest.response import ErrorResponse
-from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest
+from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
 from rest.core import RequestProcessor
 from logic.chain_iterator import ChainIterator
 
@@ -46,6 +46,11 @@ class RequestFactory:
                     return UpdateUserStatusRequest(params=params)
                 else:
                     raise ValueError("Invalid path")
+            elif method == "GET":
+                if split_path[0] == "userstatus":
+                    return GetUserStatusRequest(params=params)
+                else:
+                    raise ValueError("Invalid path")
             else:
                 raise ValueError("Invalid path")
         except Exception as ex:
@@ -77,22 +82,22 @@ class RequestHandler(BaseHTTPRequestHandler):
         logger.debug("PARAMS: {}".format(params))
 
         # get request body
-        content_type = self.headers.get("Content-Type")
-        if content_type != "application/json":
-            self.send_response(415)
-            self.end_headers()
-            self.wfile.write("Content-Type must be application/json".encode("utf-8"))
-            self.wfile.write(b"\n")
-            return
-
         body = None
-        content_len = self.headers["Content-Length"]
-        if content_len is not None:
-            content_len = int(content_len)
-            if content_len > 0:
-                content = self.rfile.read(content_len).decode("utf-8")
-                logger.debug("BODY: {}".format(content))
-                body = json.loads(content)
+        if method == "POST" or method == "PATCH":
+            content_type = self.headers.get("Content-Type")
+            if content_type != "application/json":
+                self.send_response(415)
+                self.end_headers()
+                self.wfile.write("Content-Type must be application/json".encode("utf-8"))
+                self.wfile.write(b"\n")
+                return
+            content_len = self.headers["Content-Length"]
+            if content_len is not None:
+                content_len = int(content_len)
+                if content_len > 0:
+                    content = self.rfile.read(content_len).decode("utf-8")
+                    logger.debug("BODY: {}".format(content))
+                    body = json.loads(content)
 
         result = RequestFactory.get(method=method, path=path, params=params, body=body)
         if isinstance(result, ErrorResponse):

@@ -2,7 +2,7 @@ import logging
 import time
 import jwt
 
-from rest.request import RequestBase, RequestType, UploadTrackRequest, UpdateUserStatusRequest
+from rest.request import RequestBase, RequestType, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
 from rest.response import CustomResponse, ErrorResponse, SuccessResponse
 from backend.database import Database
 from cfg.config import config
@@ -53,7 +53,7 @@ class RequestProcessor:
 
     def _process_update_user_status_request(self, request):
         assert isinstance(request, UpdateUserStatusRequest)
-        logger.debug("PROCESSING UPDATE USER STATUS request")
+        logger.debug("PROCESSING UPDATE USER STATUS REQUEST...")
 
         user_id = request.user_id
         new_user_status = request.new_user_status
@@ -64,3 +64,17 @@ class RequestProcessor:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
             return ErrorResponse("Database error")
         return SuccessResponse("Status update succeeded")
+
+    def _process_get_user_status_request(self, request):
+        assert isinstance(request, GetUserStatusRequest)
+        logger.debug("PROCESSING UPDATE USER STATUS REQUEST...")
+
+        user_id = request.user_id
+        user_status = None
+        try:
+            # TODO: get user status from database
+            pass
+        except Exception as ex:
+            logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
+            return ErrorResponse("Database error")
+        return CustomResponse(success=True, message="", status=user_status)
