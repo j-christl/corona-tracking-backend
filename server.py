@@ -99,7 +99,6 @@ class RequestHandler(BaseHTTPRequestHandler):
                     content = self.rfile.read(content_len).decode("utf-8")
                     logger.debug("BODY: {}".format(content))
                     body = json.loads(content)
-                    logger.debug()
 
         result = RequestFactory.get(method=method, path=path, params=params, body=body)
         if isinstance(result, ErrorResponse):
