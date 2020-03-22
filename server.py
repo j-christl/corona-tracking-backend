@@ -157,7 +157,6 @@ def run_chain_calc():
         global event
         event = chain_scheduler.enter(3600, 1, run_chain_calc)
 
-
 def main():
 
     if not Database.initialize():
