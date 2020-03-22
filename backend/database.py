@@ -110,7 +110,7 @@ class Database:
         cursor = Database._connection.cursor()
         cursor.callproc("get_users_risk_level", (user_id,))
         Database._connection.commit()
-        risk_level = cursor.fetchone()
+        risk_level = cursor.fetchone()[0]
         cursor.close()
         return risk_level
 
