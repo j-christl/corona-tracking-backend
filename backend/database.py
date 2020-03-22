@@ -67,6 +67,7 @@ class Database:
 
     @staticmethod
     def get_users_by_risk_level(risk_level):
+        logger.info("Getting users by risk level {}".format(risk_level))
         cursor = Database._connection.cursor()
         cursor.callproc("get_users_by_risk_level", (risk_level,))
         Database._connection.commit()
@@ -76,6 +77,7 @@ class Database:
 
     @staticmethod
     def get_contacts_after_timestamp(user_id, time_thresh):
+        logger.info("Getting contacts after timestamp for user {}, time_thresh {}".format(user_id, time_thresh))
         cursor = Database._connection.cursor()
         cursor.callproc("get_contacts_after_timestamp", (user_id, time_thresh))
         Database._connection.commit()
@@ -85,6 +87,8 @@ class Database:
 
     @staticmethod
     def insert_geo_data(user_id, lat, lon, gps_time):
+        logger.info(
+            "Inserting geo data for user_id {}, lat {}, lon {}, grp_time {}".format(user_id, lat, lon, gps_time))
         cursor = Database._connection.cursor()
         cursor.callproc("insert_geo_data", (user_id, lat, lon, gps_time))
         Database._connection.commit()
@@ -92,6 +96,7 @@ class Database:
 
     @staticmethod
     def get_geo_data_after_timestamp(user_id, time_thresh):
+        logger.info("Getting geo data after timestamp for user_id {}, time_thresh {}".format(user_id, time_thresh))
         cursor = Database._connection.cursor()
         cursor.callproc("get_geo_data_after_timestamp", (user_id, time_thresh))
         Database._connection.commit()
@@ -101,6 +106,7 @@ class Database:
 
     @staticmethod
     def get_users_risk_level(user_id):
+        logger.info("Getting users risk level for user_id {}".format(user_id))
         cursor = Database._connection.cursor()
         cursor.callproc("get_users_risk_level", (user_id,))
         Database._connection.commit()
