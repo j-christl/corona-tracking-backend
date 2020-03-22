@@ -18,3 +18,13 @@ ORDER BY contact_time;
 $BODY$
     LANGUAGE SQL STABLE
                  SECURITY DEFINER;
+
+CREATE FUNCTION get_users_below_risk_level(risk_level int) RETURNS SETOF users AS
+$BODY$
+SELECT *
+FROM users
+WHERE risk_level < $1;
+$BODY$
+    LANGUAGE SQL
+    STABLE
+    SECURITY DEFINER;
