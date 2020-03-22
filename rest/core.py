@@ -83,3 +83,19 @@ class RequestProcessor:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
             return ErrorResponse("Database error")
         return CustomResponse(success=True, message="", status=risk_level)
+
+    def _process_upload_personal_data_request(self, request):
+        assert isinstance(request, UploadPersonalDataRequest)
+        logger.debug("PROCESSING UPLOAD USER DATA REQUEST...")
+
+        user_id = request.user_id
+        firstname = request.firstname
+        lastname = request.lastname
+        phonenumber = request.phonenumber
+
+        try:
+            Database.insert_infected(user_id, firstname, lastname, phonenumber)
+        except Exception as ex:
+            logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
+            return ErrorResponse("Database error")
+        return SuccessResponse("Upload succeeded")
