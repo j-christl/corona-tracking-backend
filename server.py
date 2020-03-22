@@ -73,7 +73,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def _do_request(self, method):
         assert isinstance(method, str)
 
-        remote_ip = self.request.headers.remote_ip
+        remote_ip = self.client_address[1]
         logger.info("Incoming request from {}: {}: {}".format(remote_ip, method, self.path))
         parsed_path = urlparse(self.path)
         path = parsed_path.path
