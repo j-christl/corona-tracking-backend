@@ -14,6 +14,7 @@ from rest.core import RequestProcessor
 from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest, \
     UploadPersonalDataRequest
 from rest.response import ErrorResponse
+from logic.chain_iterator import ChainIterator
 
 logger = logging.getLogger("corona")
 ch = logging.StreamHandler()
@@ -123,16 +124,39 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 chain_scheduler = None
+event = None
+running = True
+
+
+def custom_sleep(duration):
+    while duration > 0:
+        if not running:
+            return
+        duration -= 2
+        time.sleep(2)
+
 
 def thread_func():
     global chain_scheduler
-    chain_scheduler = sched.scheduler(time.time, time.sleep)
-    chain_scheduler.enter(5, 1, run_chain_calc)
-    chain_scheduler.run()
+    chain_scheduler = sched.scheduler(time.time, custom_sleep)
+    # start first calculation after 1 second
+    chain_scheduler.enter(1, 1, run_chain_calc)
+    try:
+        chain_scheduler.run()
+    except KeyboardInterrupt:
+        global running
+        running = False
+
 
 def run_chain_calc():
-    logger.debug("CALCULATING INFECTION CHAINS...")
-    chain_scheduler.enter(5, 1, run_chain_calc)
+    global running
+    if running:
+        logger.debug("CALCULATING INFECTION CHAINS...")
+        ChainIterator.process_chains()
+        # start next calculation after 1 hour
+        global event
+        event = chain_scheduler.enter(3600, 1, run_chain_calc)
+
 
 def main():
 
@@ -143,8 +167,8 @@ def main():
     global request_processor
     request_processor = RequestProcessor()
 
-    #chain_thread = threading.Thread(target=thread_func)
-    #
+    chain_thread = threading.Thread(target=thread_func)
+    chain_thread.start()
 
     params = config("httpserver")
     hostname = params["host"]
@@ -157,7 +181,11 @@ def main():
         server.serve_forever()
     except KeyboardInterrupt:
         logger.info("HTTP SERVER STOPPED")
-    #chain_thread.join()
+        global running
+        running = False
+        global chain_scheduler
+        chain_scheduler.cancel(event)
+    chain_thread.join()
     Database.terminate()
 
 
