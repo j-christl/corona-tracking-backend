@@ -38,6 +38,8 @@ class ChainIterator:
     # Process new contacts with level 5s of the last hour
     @staticmethod
     def process_chains():
+        logger.info("Processing chains")
+
         try:
             risk_group = Database.get_users_by_risk_level(5)
 
