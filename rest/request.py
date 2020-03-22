@@ -64,6 +64,8 @@ class UploadTrackRequest(AuthRequestBase):
         if "positions" not in body:
             raise ValueError("Missing body data: positions")
 
+        self._user_id = self._jwt["userId"]
+
         # TODO: parse timestamp
         # datetime.strptime("2016-11-16 06:55:40.11", '%Y-%m-%d %H:%M:%S.%f')
         # relevance factor for direct contacts is always 1
@@ -72,12 +74,16 @@ class UploadTrackRequest(AuthRequestBase):
         self._positions = [tuple(j) for j in body["positions"]]
         logger.debug("GOT POSITIONS DATA: {}".format(self._positions))
 
+    def get_user_id(self):
+        return self._user_id
+
     def get_contacts(self):
         return self._contacts
 
     def get_positions(self):
         return self._positions
 
+    user_id = property(get_user_id)
     contacts = property(get_contacts)
     positions = property(get_positions)
 

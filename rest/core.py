@@ -43,8 +43,13 @@ class RequestProcessor:
 
         contacts = request.contacts
         postions = request.positions
+        user_id = request.user_id
         try:
-            # TODO: insert into database
+            for contact in contacts:
+                entry = (user_id, contact[0], contact[1])
+
+                # TODO: insert into database
+
             pass
         except Exception as ex:
             logger.error("EXCEPTION DATABASE: {} {}".format(type(ex), ex))
