@@ -6,11 +6,13 @@ from socketserver import ThreadingMixIn
 from urllib.parse import urlparse, parse_qsl
 import sched
 import time
+import threading
 
 from backend.database import Database
 from cfg.config import config
 from rest.core import RequestProcessor
-from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
+from rest.request import RegisterUserRequest, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest, \
+    UploadPersonalDataRequest
 from rest.response import ErrorResponse
 
 logger = logging.getLogger("corona")
@@ -122,6 +124,12 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
 
 chain_scheduler = None
 
+def thread_func():
+    global chain_scheduler
+    chain_scheduler = sched.scheduler(time.time, time.sleep)
+    chain_scheduler.enter(5, 1, run_chain_calc)
+    chain_scheduler.run()
+
 def run_chain_calc():
     logger.debug("CALCULATING INFECTION CHAINS...")
     chain_scheduler.enter(5, 1, run_chain_calc)
@@ -135,10 +143,8 @@ def main():
     global request_processor
     request_processor = RequestProcessor()
 
-    global chain_scheduler
-    chain_scheduler = sched.scheduler(time.time, time.sleep)
-    chain_scheduler.enter(5, 1, run_chain_calc)
-    #chain_scheduler.run()
+    #chain_thread = threading.Thread(target=thread_func)
+    #
 
     params = config("httpserver")
     hostname = params["host"]
@@ -151,6 +157,7 @@ def main():
         server.serve_forever()
     except KeyboardInterrupt:
         logger.info("HTTP SERVER STOPPED")
+    #chain_thread.join()
     Database.terminate()
 
 

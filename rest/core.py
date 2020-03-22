@@ -5,7 +5,8 @@ import jwt
 
 from backend.database import Database
 from cfg.config import config
-from rest.request import RequestBase, RequestType, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest
+from rest.request import RequestBase, RequestType, UploadTrackRequest, UpdateUserStatusRequest, GetUserStatusRequest, \
+    UploadPersonalDataRequest
 from rest.response import CustomResponse, ErrorResponse, SuccessResponse
 
 logger = logging.getLogger("corona")
