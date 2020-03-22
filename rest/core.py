@@ -47,7 +47,7 @@ class RequestProcessor:
         user_id = request.user_id
         try:
             for contact in contacts:
-                Database.report_contact(user_id, contact[0], contact[1], 1.0)
+                Database.report_contact(contact[0], contact[1], contact[2], contact[3])
 
             for position in positions:
                 Database.insert_geo_data(user_id, position[0], position[1], position[2])
